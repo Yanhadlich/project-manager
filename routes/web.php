@@ -14,6 +14,7 @@ Route::get('dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group( function () {
     Route::get('/projects', [ProjectsController::class. 'index'])->name('projects.index');
+    Route::get('/projects/register', [ProjectsController::class. 'register'])->name('projects.register');
     Route::get('/projects/create', [ProjectsController::class. 'create'])->name('projects.create');
     Route::put('/projects/{project}', [ProjectsController::class. 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectsController::class. 'delete'])->name('projects.delete');

@@ -18,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
-            <Link :href="route('projects.create')"><Button>Novo projeto</Button></Link>
+            <Link :href="route('projects.register')"><Button>Novo projeto</Button></Link>
         </div>
     </AppLayout>
 </template>
