@@ -32,11 +32,5 @@ class ProjectsController extends Controller
         return redirect()->route('projects.index')->with('message', 'Novo projeto criado com sucesso!');
     }
 
-    public function update() {
-        //
-    }
-    
-    public function delete() {
-        //
-    }
+
 }
