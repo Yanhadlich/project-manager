@@ -76,6 +76,8 @@ watch (
                         <TableCell>{{ project.status_id }}</TableCell>
                         <TableCell>{{ project.is_active }}</TableCell>
                         <TableCell class="text-right">
+                            <Link :href="route('projects.edit', {id: project.id})"><Button class="mr-1"> Editar </Button></Link>
+                            <Button variant="destructive"> Excluir </Button>
                         </TableCell>
                     </TableRow>
                     </TableBody>

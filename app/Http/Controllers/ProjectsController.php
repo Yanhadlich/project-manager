@@ -33,5 +33,25 @@ class ProjectsController extends Controller
         return redirect()->route('projects.index')->with('message', 'Novo projeto criado com sucesso!');
     }
 
+    public function edit(Projects $project) {
+        return Inertia::render('projects/Edit', compact('project'));
+    }
+
+    public function update(Request $request, Projects $project) {
+        $request->validate([
+            'client' => 'required|string',
+            'title' => 'required|string',
+        ]);
+
+        $project->update([
+            'client' => $request->input('client'),
+            'title' => $request->input('title'),
+            'status_id' => 1,
+            'is_active' => true,
+        ]);
+
+        return redirect()->route('projects.index')->with('message', 'Projeto atualizado!');
+    }
+
 
 }
