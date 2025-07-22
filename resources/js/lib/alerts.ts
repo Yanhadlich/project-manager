@@ -24,3 +24,17 @@ export function showToast(message: string, icon:'success') {
         }
     });
 }
+
+export async function showConfirm(message: string, title: 'Atenção!') {
+    return Swal.fire({
+        icon:'warning',
+        title,
+        text:message,
+        theme:"auto",
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }). then(result => {
+        return result.isConfirmed;
+    });
+}

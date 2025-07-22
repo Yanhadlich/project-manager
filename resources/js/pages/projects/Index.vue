@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Button from '@/components/ui/button/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { showToast } from '@/lib/alerts';
+import { showConfirm, showToast } from '@/lib/alerts';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import {
   Table,
   TableBody,
@@ -35,6 +35,12 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/projects',
     },
 ];
+
+const handleDelete = async (id: number) => {
+    if(await showConfirm('Deseja excluir esse projeto?', "Atenção!")) {
+        router.delete(route('projects.delete', {id}));
+    }
+}
 
 watch (
     () => page.props.flash?.message,
@@ -77,7 +83,7 @@ watch (
                         <TableCell>{{ project.is_active }}</TableCell>
                         <TableCell class="text-right">
                             <Link :href="route('projects.edit', {id: project.id})"><Button class="mr-1"> Editar </Button></Link>
-                            <Button variant="destructive"> Excluir </Button>
+                            <Button @click="handleDelete(project.id)" variant="destructive"> Excluir </Button>
                         </TableCell>
                     </TableRow>
                     </TableBody>

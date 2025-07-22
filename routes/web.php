@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group( function () {
     Route::post('/projects/create', [ProjectsController::class, 'create'])->name('projects.create');
     Route::get('/projects/{project}/edit', [ProjectsController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectsController::class, 'update'])->name('projects.update');
-    // Route::delete('/projects/{project}', [ProjectsController::class, 'delete'])->name('projects.delete');
+    Route::delete('/projects/{project}', [ProjectsController::class, 'delete'])->name('projects.delete');
 });
 
 require __DIR__.'/settings.php';

@@ -53,5 +53,8 @@ class ProjectsController extends Controller
         return redirect()->route('projects.index')->with('message', 'Projeto atualizado!');
     }
 
-
+        public function delete(Projects $project) {
+        $project->delete();
+        return redirect()->route('projects.index')->with('message', 'Projeto excluido com sucesso!');
+    }
 }
