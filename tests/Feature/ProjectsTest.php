@@ -83,7 +83,6 @@ class ProjectsTest extends TestCase
              ->assertStatus(403);
         $this->delete(route('projects.delete', $project))
              ->assertStatus(403);
-
         
         foreach (['Administrador','Gerente','Desenvolvedor'] as $role) {
             $this->makeUserWithRole($role);
