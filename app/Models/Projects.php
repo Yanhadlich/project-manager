@@ -9,4 +9,9 @@ class Projects extends Model
 {
     use HasFactory;
     protected $fillable = ['title', 'client', 'status_id', 'is_active'];
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }
