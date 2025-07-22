@@ -9,7 +9,8 @@ use Inertia\Inertia;
 class ProjectsController extends Controller
 {
     public function index() {
-        return Inertia::render('projects/Index');
+        $projects = Projects::latest()->get();
+        return Inertia::render('projects/Index', compact('projects'));
     }
 
     public function register() {
