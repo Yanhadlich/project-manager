@@ -14,19 +14,19 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'manager']);
-        Role::create(['name' => 'developer']);
-        Role::create(['name' => 'client']);
+        Role::create(['name' => 'Administrador']);
+        Role::create(['name' => 'Gerente']);
+        Role::create(['name' => 'Desenvolvedor']);
+        Role::create(['name' => 'Cliente']);
 
         Permission::create(['name' => 'view projects']);
         Permission::create(['name' => 'edit projects']);
         Permission::create(['name' => 'delete projects']);
         Permission::create(['name' => 'create projects']);
 
-        Role::findByName('admin')->givePermissionTo(Permission::all());
-        Role::findByName('manager')->givePermissionTo(Permission::all());
-        Role::findByName('developer')->givePermissionTo(['view projects', 'edit projects', 'create projects']);
-        Role::findByName('client')->givePermissionTo(['view projects']);
+        Role::findByName('Administrador')->givePermissionTo(Permission::all());
+        Role::findByName('Gerente')->givePermissionTo(Permission::all());
+        Role::findByName('Desenvolvedor')->givePermissionTo(['view projects', 'edit projects', 'create projects']);
+        Role::findByName('Cliente')->givePermissionTo(['view projects']);
     }
 }

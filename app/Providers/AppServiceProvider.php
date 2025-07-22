@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Inertia::share('permissions', function () {
+            return [
+                'canCreate' => auth()->user()?->can('create projects'),
+                'canEdit' => auth()->user()?->can('edit projects'),
+                'canDelete' => auth()->user()?->can('delete projects'),
+            ];
+        });
     }
 }

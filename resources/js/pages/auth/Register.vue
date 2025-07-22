@@ -18,11 +18,10 @@ import {
     ComboboxList, 
     ComboboxTrigger 
 } from '@/components/ui/combobox';
-import { cn } from '@/lib/utils';
 
 const roles = [
     { id: 1, name: 'Administrador' },
-    { id: 2, name: 'Gerenciador' },
+    { id: 2, name: 'Gerente' },
     { id: 3, name: 'Desenvolvedor' },
     { id: 4, name: 'Cliente' },
 ];
@@ -32,7 +31,7 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
-    role: '',
+    role: null,
 });
 
 const submit = () => {
@@ -89,11 +88,11 @@ const submit = () => {
                 </div>
 
                 <div class="grid gap-2">
-                    <Combobox v-model="form.role" by="label">
+                    <Combobox v-model="form.role" by="id">
                         <ComboboxAnchor as-child>
                             <ComboboxTrigger as-child>
                                 <Button variant="outline" class="w-full" tabindex="5">
-                                    {{ form.role.name || 'Selecione uma categoria' }}
+                                    {{ form.role ? form.role.name : 'Selecione uma categoria' }}
                                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </ComboboxTrigger>

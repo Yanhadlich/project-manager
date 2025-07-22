@@ -42,8 +42,14 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        $roleName = Role::findById($request->role->id ?? '4');
-        $user->assignRole($roleName->name);
+
+        $roleId = $request->input('role.id', 4);
+        $role = Role::findById($roleId);
+        if ($role) {
+            $user->assignRole($role->name);
+        } else {
+            $user->assignRole('Cliente');
+        }
 
         event(new Registered($user));
 
