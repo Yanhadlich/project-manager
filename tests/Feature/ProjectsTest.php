@@ -32,5 +32,54 @@ class ProjectsTest extends TestCase
             $page->component('projects/Index')
                  ->has('projects', 3)
         );
-    }    
+    }
+
+    public function test_user_can_create_a_project()
+    {
+        $this->authenticatedUser();
+        Status::factory()->create();
+        $response = $this->post(route('projects.create'), [
+            'client' => 'Cliente Exemplo',
+            'title' => 'Projeto Exemplo',
+        ]);
+
+        $response->assertRedirect(route('projects.index'));
+        $this->assertDatabaseHas('projects', [
+            'client' => 'Cliente Exemplo',
+            'title' => 'Projeto Exemplo',
+        ]);
+    }
+
+    public function test_user_can_edit_a_project()
+    {
+        $this->authenticatedUser();
+        Status::factory()->create();
+        $project = Projects::factory()->create();
+
+        $response = $this->put(route('projects.update', $project), [
+            'client' => 'Cliente Editado',
+            'title' => 'Projeto Editado',
+        ]);
+
+        $response->assertRedirect(route('projects.index'));
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            'client' => 'Cliente Editado',
+            'title' => 'Projeto Editado',
+        ]);
+    }
+
+    public function test_user_can_delete_a_project()
+    {
+        $this->authenticatedUser();
+        Status::factory()->create();
+        $project = Projects::factory()->create();
+
+        $response = $this->delete(route('projects.delete', $project));
+
+        $response->assertRedirect(route('projects.index'));
+        $this->assertDatabaseMissing('projects', [
+            'id' => $project->id,
+        ]);
+    }
 }
