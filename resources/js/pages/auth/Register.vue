@@ -6,13 +6,33 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
+import { LoaderCircle, Check, ChevronsUpDown, Search } from 'lucide-vue-next';
+import { 
+    Combobox, 
+    ComboboxAnchor, 
+    ComboboxEmpty, 
+    ComboboxGroup, 
+    ComboboxInput, 
+    ComboboxItem, 
+    ComboboxItemIndicator, 
+    ComboboxList, 
+    ComboboxTrigger 
+} from '@/components/ui/combobox';
+import { cn } from '@/lib/utils';
+
+const roles = [
+    { id: 1, name: 'Administrador' },
+    { id: 2, name: 'Gerenciador' },
+    { id: 3, name: 'Desenvolvedor' },
+    { id: 4, name: 'Cliente' },
+];
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
+    role: '',
 });
 
 const submit = () => {
@@ -68,7 +88,43 @@ const submit = () => {
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
+                <div class="grid gap-2">
+                    <Combobox v-model="form.role" by="label">
+                        <ComboboxAnchor as-child>
+                            <ComboboxTrigger as-child>
+                                <Button variant="outline" class="w-full" tabindex="5">
+                                    {{ form.role.name || 'Selecione uma categoria' }}
+                                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </ComboboxTrigger>
+                        </ComboboxAnchor>
+                        <ComboboxList class="w-full">
+                        <div class="relative w-full max-w-sm items-center">
+                            <ComboboxInput class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10" placeholder="Selecione uma categoria" />
+                            <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
+                            <Search class="size-4 text-muted-foreground" />
+                            </span>
+                        </div>
+
+                        <ComboboxEmpty>
+                            Nenhuma categoria encontrada.
+                        </ComboboxEmpty>
+
+                        <ComboboxGroup>
+                            <ComboboxItem
+                            v-for="role in roles"
+                            :key="role?.id"
+                            :value="role"
+                            >
+                            {{ role?.name}}
+
+                            </ComboboxItem>
+                        </ComboboxGroup>
+                        </ComboboxList>
+                    </Combobox>
+                </div>
+
+                <Button type="submit" class="mt-2 w-full" tabindex="6" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     Create account
                 </Button>
