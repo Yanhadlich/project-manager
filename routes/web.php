@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\TeamsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -28,15 +29,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::middleware(['role:Administrador|Gerente'])->group(function () {
-        Route::get('/teams', [\App\Http\Controllers\TeamsController::class, 'index'])->name('teams.index');
-        Route::get('/teams/register', [\App\Http\Controllers\TeamsController::class, 'create'])->name('teams.register');
-        Route::post('/teams/create', [\App\Http\Controllers\TeamsController::class, 'register'])->name('teams.create');
-        Route::get('/teams/{id}/edit', [\App\Http\Controllers\TeamsController::class, 'edit'])->name('teams.edit');
-        Route::put('/teams/{id}', [\App\Http\Controllers\TeamsController::class, 'update'])->name('teams.update');
+        Route::get('/teams', [TeamsController::class, 'index'])->name('teams.index');
+        Route::get('/teams/register', [TeamsController::class, 'register'])->name('teams.register');
+        Route::post('/teams/create', [TeamsController::class, 'create'])->name('teams.create');
+        Route::get('/teams/{id}/edit', [TeamsController::class, 'edit'])->name('teams.edit');
+        Route::put('/teams/{id}', [TeamsController::class, 'update'])->name('teams.update');
     });
 
     Route::middleware(['role:Administrador'])->group(function () {
-        Route::delete('/teams/{id}', [\App\Http\Controllers\TeamsController::class, 'delete'])->name('teams.delete');
+        Route::delete('/teams/{id}', [TeamsController::class, 'delete'])->name('teams.delete');
     });
 });
 

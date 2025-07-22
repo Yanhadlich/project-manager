@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Projects extends Model
+class Project extends Model
 {
     use HasFactory;
     protected $fillable = ['title', 'client', 'status_id', 'is_active'];
@@ -13,5 +13,10 @@ class Projects extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'project_team');
     }
 }

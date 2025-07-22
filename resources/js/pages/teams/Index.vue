@@ -14,10 +14,12 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { watch } from 'vue';
+import Badge from '@/components/ui/badge/Badge.vue';
 
 interface Teams{
     id: number,
     name: string,
+    projects: string[],
 }
 
 interface Props{
@@ -48,10 +50,10 @@ watch (
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
-            <Link v-if="permissions.canCreate" :href="route('teams.register')"><Button>Novo projeto</Button></Link>
+            <Link v-if="permissions.canCreate" :href="route('teams.register')"><Button>Criar equipe</Button></Link>
             <div>
                 <Table>
-                    <TableCaption>Todos os projetos</TableCaption>
+                    <TableCaption>Equipes</TableCaption>
                     <TableHeader>
                     <TableRow>
                         <TableHead class="w-[100px]">
@@ -65,15 +67,23 @@ watch (
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    <TableRow v-for="team in props.teams" :key="team.id">
-                        <TableCell class="font-medium">{{ team.id }}</TableCell>
-                        <TableCell>{{ team.name }}</TableCell>
-                        <TableCell>{{ team.projects }}</TableCell>
-                        <TableCell v-if="permissions.canEdit" class="text-right">
-                            <Link :href="route('teams.edit', {id: team.id})"><Button class="mr-1"> Editar </Button></Link>
-                            <Button v-if="permissions.canDelete" @click="handleDelete(team.id)" variant="destructive"> Excluir </Button>
-                        </TableCell>
-                    </TableRow>
+                        <TableRow v-for="team in props.teams" :key="team.id" class="">
+                            <TableCell class="font-medium">{{ team.id }}</TableCell>
+                            <TableCell>{{ team.name }}</TableCell>
+                            <TableCell class="grid grid-flow-col gap-2 p-1 justify-start">
+                                <div v-for="project in team.projects" class="flex items-center">
+                                    <Badge> {{ project }} </Badge>
+                                </div>
+                            </TableCell>
+                            <TableCell v-if="permissions.canEdit" class="text-right">
+                                <Link :href="route('teams.edit', {id: team.id})">
+                                    <Button class="mr-1"> Editar </Button>
+                                </Link>
+                                <Button v-if="permissions.canDelete" @click="handleDelete(team.id)" variant="destructive">
+                                    Excluir
+                                </Button>
+                            </TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </div>
