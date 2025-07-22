@@ -25,6 +25,7 @@ interface Projects{
 
 interface Props{
     projects: Projects[];
+    permissions: object;
 }
 
 const props = defineProps<Props>()
@@ -56,7 +57,7 @@ watch (
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
-            <Link :href="route('projects.register')"><Button>Novo projeto</Button></Link>
+            <Link v-if="permissions.canCreate" :href="route('projects.register')"><Button>Novo projeto</Button></Link>
             <div>
                 <Table>
                     <TableCaption>Todos os projetos</TableCaption>
@@ -69,7 +70,8 @@ watch (
                         <TableHead>Projeto</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Ativo</TableHead>
-                        <TableHead class="text-right">
+
+                        <TableHead v-if="permissions.canEdit" class="text-right">
                             Ações
                         </TableHead>
                     </TableRow>
@@ -81,9 +83,9 @@ watch (
                         <TableCell>{{ project.title }}</TableCell>
                         <TableCell>{{ project.status_id }}</TableCell>
                         <TableCell>{{ project.is_active }}</TableCell>
-                        <TableCell class="text-right">
+                        <TableCell v-if="permissions.canEdit" class="text-right">
                             <Link :href="route('projects.edit', {id: project.id})"><Button class="mr-1"> Editar </Button></Link>
-                            <Button @click="handleDelete(project.id)" variant="destructive"> Excluir </Button>
+                            <Button v-if="permissions.canDelete" @click="handleDelete(project.id)" variant="destructive"> Excluir </Button>
                         </TableCell>
                     </TableRow>
                     </TableBody>

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Projects;
 use App\Models\Status;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,16 +13,18 @@ class ProjectsTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function authenticatedUser()
+    private function makeUserWithRole(string $roleName)
     {
+        Role::create(['name' => $roleName]);
         $user = User::factory()->create();
+        $user->assignRole($roleName);
         $this->actingAs($user);
         return $user;
     }
 
-    public function test_user_can_view_projects_list()
+    public function test_any_authenticated_user_can_view_list()
     {
-        $this->authenticatedUser();
+        $this->makeUserWithRole('Cliente');  
         Status::factory()->create();
         Projects::factory()->count(3)->create();
 
@@ -34,52 +37,71 @@ class ProjectsTest extends TestCase
         );
     }
 
-    public function test_user_can_create_a_project()
+    public function test_non_privileged_user_cannot_create_project()
     {
-        $this->authenticatedUser();
+        $this->makeUserWithRole('Cliente');
         Status::factory()->create();
+
         $response = $this->post(route('projects.create'), [
-            'client' => 'Cliente Exemplo',
-            'title' => 'Projeto Exemplo',
+            'client' => 'A',
+            'title' => 'B',
         ]);
 
-        $response->assertRedirect(route('projects.index'));
-        $this->assertDatabaseHas('projects', [
-            'client' => 'Cliente Exemplo',
-            'title' => 'Projeto Exemplo',
-        ]);
+        $response->assertStatus(403);
+        $this->assertDatabaseCount('projects', 0);
     }
 
-    public function test_user_can_edit_a_project()
+    public function test_privileged_roles_can_create_project()
     {
-        $this->authenticatedUser();
+        foreach (['Administrador', 'Gerente', 'Desenvolvedor'] as $role) {
+            $this->makeUserWithRole($role);
+            Status::factory()->create();
+
+            $response = $this->post(route('projects.create'), [
+                'client' => 'Cliente Exemplo',
+                'title' => 'Projeto Exemplo',
+            ]);
+
+            $response->assertRedirect(route('projects.index'));
+            $this->assertDatabaseHas('projects', [
+                'client' => 'Cliente Exemplo',
+                'title' => 'Projeto Exemplo'
+            ]);
+
+            Projects::query()->delete(); 
+        }
+    }
+
+    public function test_edit_and_delete_respects_roles()
+    {
         Status::factory()->create();
         $project = Projects::factory()->create();
 
-        $response = $this->put(route('projects.update', $project), [
-            'client' => 'Cliente Editado',
-            'title' => 'Projeto Editado',
-        ]);
+        
+        $this->makeUserWithRole('Cliente');
+        $this->put(route('projects.update', $project), ['client'=>'X','title'=>'Y'])
+             ->assertStatus(403);
+        $this->delete(route('projects.delete', $project))
+             ->assertStatus(403);
 
-        $response->assertRedirect(route('projects.index'));
-        $this->assertDatabaseHas('projects', [
-            'id' => $project->id,
-            'client' => 'Cliente Editado',
-            'title' => 'Projeto Editado',
-        ]);
-    }
+        
+        foreach (['Administrador','Gerente','Desenvolvedor'] as $role) {
+            $this->makeUserWithRole($role);
+            $res1 = $this->put(route('projects.update', $project), [
+                'client' => 'Edit '.$role,
+                'title' => 'Title '.$role,
+                'status' => ['id' => 1, 'name' => 'Active'],
+            ]);
+            $res1->assertRedirect(route('projects.index'));
+            $this->assertDatabaseHas('projects', ['client' => 'Edit '.$role]);
 
-    public function test_user_can_delete_a_project()
-    {
-        $this->authenticatedUser();
-        Status::factory()->create();
-        $project = Projects::factory()->create();
-
-        $response = $this->delete(route('projects.delete', $project));
-
-        $response->assertRedirect(route('projects.index'));
-        $this->assertDatabaseMissing('projects', [
-            'id' => $project->id,
-        ]);
+            $res2 = $this->delete(route('projects.delete', $project));
+            if ($role === 'Desenvolvedor') {
+                $res2->assertStatus(403);
+                continue;
+            }
+            $res2->assertRedirect(route('projects.index'));
+            $project = Projects::factory()->create(); 
+        }
     }
 }
