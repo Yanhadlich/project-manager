@@ -9,7 +9,7 @@ interface Projects{
     id: number,
     title: string,
     client: string,
-    status_id: number,
+    status_name: string,
     is_active: number,
 }
 
@@ -55,7 +55,7 @@ const handleDelete = async (id: number) => {
             <td class="px-4 py-2">{{ project.id }}</td>
             <td class="px-4 py-2">{{ project.client }}</td>
             <td class="px-4 py-2">{{ project.title }}</td>
-            <td class="px-4 py-2">{{ project.status_id }}</td>
+            <td class="px-4 py-2">{{ project.status_name }}</td>
             <td v-if="permissions.canEdit" class="px-4 py-2 text-right">
                 <Link :href="route('projects.edit', {id: project.id})">
                     <Button class="mr-1"> Editar </Button>

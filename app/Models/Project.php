@@ -19,4 +19,14 @@ class Project extends Model
     {
         return $this->belongsToMany(Team::class, 'project_team');
     }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'project_user');
+    }
 }

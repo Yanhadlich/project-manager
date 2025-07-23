@@ -9,7 +9,26 @@ use Inertia\Inertia;
 class ProjectsController extends Controller
 {
     public function index() {
-        $projects = Project::active()->latest()->get();
+        $user = auth()->user();
+
+        $query = Project::with('status:id,name')->active()->latest();
+        
+        if (!$user->hasRole('Administrador')) {
+            $query->whereHas('users', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
+        }
+
+        $projects = $query->get()->map(function ($project) {
+            return [
+                'id' => $project->id,
+                'title' => $project->title,
+                'client' => $project->client,
+                'is_active' => $project->is_active,
+                'status_name' => $project->status->name,
+            ];
+        });
+
         return Inertia::render('projects/Index', compact('projects'));
     }
 
@@ -23,12 +42,14 @@ class ProjectsController extends Controller
             'title' => 'required|string',
         ]);
 
-        Project::create([
+        $project = Project::create([
             'client' => $request->input('client'),
             'title' => $request->input('title'),
             'status_id' => 1,
             'is_active' => true,
         ]);
+
+        $project->users()->attach(auth()->id());
 
         return redirect()->route('projects.index')->with('message', 'Novo projeto criado com sucesso!');
     }

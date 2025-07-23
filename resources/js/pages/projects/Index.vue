@@ -10,7 +10,7 @@ interface Projects{
     id: number,
     title: string,
     client: string,
-    status_id: number,
+    status_name: number,
     is_active: number,
 }
 
