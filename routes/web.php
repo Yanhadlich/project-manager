@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\TeamsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,6 +26,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware(['role:Administrador|Gerente'])->group(function () {
         Route::delete('/projects/{project}', [ProjectsController::class, 'delete'])->name('projects.delete');
+    });
+
+    Route::middleware(['role:Administrador|Gerente'])->group(function () {
+        Route::get('/teams', [TeamsController::class, 'index'])->name('teams.index');
+        Route::get('/teams/register', [TeamsController::class, 'register'])->name('teams.register');
+        Route::post('/teams/create', [TeamsController::class, 'create'])->name('teams.create');
+        Route::get('/teams/{id}/edit', [TeamsController::class, 'edit'])->name('teams.edit');
+        Route::put('/teams/{id}', [TeamsController::class, 'update'])->name('teams.update');
+        Route::delete('/teams/{id}', [TeamsController::class, 'delete'])->name('teams.delete');
     });
 });
 

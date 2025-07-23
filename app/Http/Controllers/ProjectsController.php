@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Projects;
+use App\Models\Project;
 use App\Models\Status;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 class ProjectsController extends Controller
 {
     public function index() {
-        $projects = Projects::active()->latest()->get();
+        $projects = Project::active()->latest()->get();
         return Inertia::render('projects/Index', compact('projects'));
     }
 
@@ -23,7 +23,7 @@ class ProjectsController extends Controller
             'title' => 'required|string',
         ]);
 
-        Projects::create([
+        Project::create([
             'client' => $request->input('client'),
             'title' => $request->input('title'),
             'status_id' => 1,
@@ -33,12 +33,12 @@ class ProjectsController extends Controller
         return redirect()->route('projects.index')->with('message', 'Novo projeto criado com sucesso!');
     }
 
-    public function edit(Projects $project) {
+    public function edit(Project $project) {
         $status = Status::all();
         return Inertia::render('projects/Edit', compact('project', 'status'));
     }
 
-    public function update(Request $request, Projects $project) {
+    public function update(Request $request, Project $project) {
         $request->validate([
             'client' => 'required|string',
             'title' => 'required|string',
@@ -54,7 +54,7 @@ class ProjectsController extends Controller
         return redirect()->route('projects.index')->with('message', 'Projeto atualizado!');
     }
 
-        public function delete(Projects $project) {
+        public function delete(Project $project) {
         $project->update([
             'is_active' => false,
         ]);

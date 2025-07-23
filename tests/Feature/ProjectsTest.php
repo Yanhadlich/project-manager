@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Projects;
+use App\Models\Project;
 use App\Models\Status;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
@@ -26,7 +26,7 @@ class ProjectsTest extends TestCase
     {
         $this->makeUserWithRole('Cliente');  
         Status::factory()->create();
-        Projects::factory()->count(3)->create();
+        Project::factory()->count(3)->create();
 
         $response = $this->get(route('projects.index'));
 
@@ -68,14 +68,14 @@ class ProjectsTest extends TestCase
                 'title' => 'Projeto Exemplo'
             ]);
 
-            Projects::query()->delete(); 
+            Project::query()->delete(); 
         }
     }
 
     public function test_edit_and_delete_respects_roles()
     {
         Status::factory()->create();
-        $project = Projects::factory()->create();
+        $project = Project::factory()->create();
 
         
         $this->makeUserWithRole('Cliente');
@@ -83,7 +83,6 @@ class ProjectsTest extends TestCase
              ->assertStatus(403);
         $this->delete(route('projects.delete', $project))
              ->assertStatus(403);
-
         
         foreach (['Administrador','Gerente','Desenvolvedor'] as $role) {
             $this->makeUserWithRole($role);
@@ -101,7 +100,7 @@ class ProjectsTest extends TestCase
                 continue;
             }
             $res2->assertRedirect(route('projects.index'));
-            $project = Projects::factory()->create(); 
+            $project = Project::factory()->create(); 
         }
     }
 }
