@@ -2,7 +2,6 @@
 import Button from '@/components/ui/button/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { showConfirm, showToast } from '@/lib/alerts';
-import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import {
   Table,
@@ -29,12 +28,12 @@ interface Props{
 
 const props = defineProps<Props>()
 const page = usePage();
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Equipes',
-        href: '/teams',
-    },
-];
+
+const handleDelete = async (id: number) => {
+    if(await showConfirm('Deseja excluir essa equipe??', "Atenção!")) {
+        router.delete(route('teams.delete', {id}));
+    }
+}
 
 watch (
     () => page.props.flash?.message,
@@ -48,7 +47,7 @@ watch (
 <template>
     <Head title="Equipes" />
 
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <AppLayout :breadcrumbs="[{title: 'Equipes', href: `/teams`}]">
         <div class="p-4">
             <Link v-if="permissions.canCreate" :href="route('teams.register')"><Button>Criar equipe</Button></Link>
             <div>
@@ -79,9 +78,7 @@ watch (
                                 <Link :href="route('teams.edit', {id: team.id})">
                                     <Button class="mr-1"> Editar </Button>
                                 </Link>
-                                <Button v-if="permissions.canDelete" @click="handleDelete(team.id)" variant="destructive">
-                                    Excluir
-                                </Button>
+                                <Button v-if="permissions.canDelete" @click="handleDelete(team.id)" variant="destructive">Excluir</Button>
                             </TableCell>
                         </TableRow>
                     </TableBody>

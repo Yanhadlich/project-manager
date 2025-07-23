@@ -34,9 +34,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/teams/create', [TeamsController::class, 'create'])->name('teams.create');
         Route::get('/teams/{id}/edit', [TeamsController::class, 'edit'])->name('teams.edit');
         Route::put('/teams/{id}', [TeamsController::class, 'update'])->name('teams.update');
-    });
-
-    Route::middleware(['role:Administrador'])->group(function () {
         Route::delete('/teams/{id}', [TeamsController::class, 'delete'])->name('teams.delete');
     });
 });

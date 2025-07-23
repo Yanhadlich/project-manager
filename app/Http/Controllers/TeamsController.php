@@ -84,6 +84,8 @@ class TeamsController extends Controller
     }
 
     public function delete($id) {
-        return redirect()->route('teams.index')->with('message', 'Team deleted successfully!');
+        $team = Team::findOrFail($id);
+        $team->delete();
+        return redirect()->route('teams.index')->with('message', 'Time deletado com sucesso!');
     }
 }

@@ -2,7 +2,6 @@
 import Button from '@/components/ui/button/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { showConfirm, showToast } from '@/lib/alerts';
-import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import {
   Table,
@@ -30,12 +29,6 @@ interface Props{
 
 const props = defineProps<Props>()
 const page = usePage();
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Projetos',
-        href: '/projects',
-    },
-];
 
 const handleDelete = async (id: number) => {
     if(await showConfirm('Deseja excluir esse projeto?', "Atenção!")) {
@@ -55,7 +48,7 @@ watch (
 <template>
     <Head title="Projetos" />
 
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <AppLayout :breadcrumbs="[{title: 'Projetos', href: `/projects`}]">
         <div class="p-4">
             <Link v-if="permissions.canCreate" :href="route('projects.register')"><Button>Novo projeto</Button></Link>
             <div>
