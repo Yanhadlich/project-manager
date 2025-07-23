@@ -35,8 +35,7 @@ Antes de iniciar, certifique-se de ter instalado:
 
 ### 1. Clone o projeto
 
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/Yanhadlich/project-manager)
 
 ### 2. Execute o script de setup automático
 
