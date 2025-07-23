@@ -1,19 +1,9 @@
 <script setup lang="ts">
-import Button from '@/components/ui/button/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { showConfirm, showToast } from '@/lib/alerts';
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { showToast } from '@/lib/alerts';
+import { Head, usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
-import Badge from '@/components/ui/badge/Badge.vue';
+import TeamsTable from '@/components/TeamsTable.vue';
 
 interface Teams{
     id: number,
@@ -29,12 +19,6 @@ interface Props{
 const props = defineProps<Props>()
 const page = usePage();
 
-const handleDelete = async (id: number) => {
-    if(await showConfirm('Deseja excluir essa equipe??', "Atenção!")) {
-        router.delete(route('teams.delete', {id}));
-    }
-}
-
 watch (
     () => page.props.flash?.message,
     (message) => {
@@ -46,43 +30,11 @@ watch (
 
 <template>
     <Head title="Equipes" />
-
     <AppLayout :breadcrumbs="[{title: 'Equipes', href: `/teams`}]">
-        <div class="p-4">
-            <Link v-if="permissions.canCreate" :href="route('teams.register')"><Button>Criar equipe</Button></Link>
-            <div>
-                <Table>
-                    <TableCaption>Equipes</TableCaption>
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead class="w-[100px]">
-                            Cod.
-                        </TableHead>
-                        <TableHead>Equipes</TableHead>
-                        <TableHead>Projeto</TableHead>
-                        <TableHead v-if="permissions.canEdit" class="text-right">
-                            Ações
-                        </TableHead>
-                    </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow v-for="team in props.teams" :key="team.id" class="">
-                            <TableCell class="font-medium">{{ team.id }}</TableCell>
-                            <TableCell>{{ team.name }}</TableCell>
-                            <TableCell class="grid grid-flow-col gap-2 p-1 justify-start">
-                                <div v-for="project in team.projects" class="flex items-center">
-                                    <Badge> {{ project }} </Badge>
-                                </div>
-                            </TableCell>
-                            <TableCell v-if="permissions.canEdit" class="text-right">
-                                <Link :href="route('teams.edit', {id: team.id})">
-                                    <Button class="mr-1"> Editar </Button>
-                                </Link>
-                                <Button v-if="permissions.canDelete" @click="handleDelete(team.id)" variant="destructive">Excluir</Button>
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border p-4">
+                <h1 class="text-2xl font-bold mb-4">Lista de Equipes</h1>
+                <TeamsTable :teams="props.teams" :permissions="permissions" />
             </div>
         </div>
     </AppLayout>
