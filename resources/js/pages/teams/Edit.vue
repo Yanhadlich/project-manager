@@ -4,7 +4,6 @@ import Input from '@/components/ui/input/Input.vue';
 import Label from '@/components/ui/label/Label.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3'
-import { ref, computed } from 'vue';
 import MultiSelectSearch from '@/components/ui/multiselect/MultiSelectSearch.vue';
 
 interface Users {
@@ -29,8 +28,6 @@ interface Props{
     projects: Projects[];
     team: Team;
 }
-
-const userSearch = ref('');
 
 const props = defineProps<Props>()
 const form = useForm({
