@@ -4,37 +4,40 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Building2, Folder, LayoutGrid, UsersRound } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Building2, Folder, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
+interface Props{
+    permission: object;
+}
+
+const props = defineProps<Props>()
+
 const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
     {
         title: 'Projetos',
         href: '/projects',
         icon: Building2,
     },
-    {
+    ...(props.canDelete
+    ? [{
         title: 'Times',
         href: '/teams',
         icon: UsersRound,
-    },
+      }]
+    : []),
 ];
 
 const footerNavItems: NavItem[] = [
     {
         title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
+        href: 'https://github.com/Yanhadlich/project-manager',
         icon: Folder,
     },
     {
         title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
+        href: 'https://github.com/Yanhadlich/project-manager/README.md',
         icon: BookOpen,
     },
 ];
@@ -46,7 +49,7 @@ const footerNavItems: NavItem[] = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('dashboard')">
+                        <Link :href="route('projects.index')">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>

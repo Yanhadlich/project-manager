@@ -1,24 +1,15 @@
 <script setup lang="ts">
-import Button from '@/components/ui/button/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { showConfirm, showToast } from '@/lib/alerts';
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { showToast } from '@/lib/alerts';
+import { Head, usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
+import ProjectsTable from '@/components/ProjectsTable.vue';
 
 interface Projects{
     id: number,
     title: string,
     client: string,
-    status_id: number,
+    status_name: number,
     is_active: number,
 }
 
@@ -29,12 +20,6 @@ interface Props{
 
 const props = defineProps<Props>()
 const page = usePage();
-
-const handleDelete = async (id: number) => {
-    if(await showConfirm('Deseja excluir esse projeto?', "Atenção!")) {
-        router.delete(route('projects.delete', {id}));
-    }
-}
 
 watch (
     () => page.props.flash?.message,
@@ -49,41 +34,12 @@ watch (
     <Head title="Projetos" />
 
     <AppLayout :breadcrumbs="[{title: 'Projetos', href: `/projects`}]">
-        <div class="p-4">
-            <Link v-if="permissions.canCreate" :href="route('projects.register')"><Button>Novo projeto</Button></Link>
-            <div>
-                <Table>
-                    <TableCaption>Todos os projetos</TableCaption>
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead class="w-[100px]">
-                            Cod.
-                        </TableHead>
-                        <TableHead>Cliente</TableHead>
-                        <TableHead>Projeto</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Ativo</TableHead>
-
-                        <TableHead v-if="permissions.canEdit" class="text-right">
-                            Ações
-                        </TableHead>
-                    </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                    <TableRow v-for="project in props.projects" :key="project.id">
-                        <TableCell class="font-medium">{{ project.id }}</TableCell>
-                        <TableCell>{{ project.client }}</TableCell>
-                        <TableCell>{{ project.title }}</TableCell>
-                        <TableCell>{{ project.status_id }}</TableCell>
-                        <TableCell>{{ project.is_active }}</TableCell>
-                        <TableCell v-if="permissions.canEdit" class="text-right">
-                            <Link :href="route('projects.edit', {id: project.id})"><Button class="mr-1"> Editar </Button></Link>
-                            <Button v-if="permissions.canDelete" @click="handleDelete(project.id)" variant="destructive"> Excluir </Button>
-                        </TableCell>
-                    </TableRow>
-                    </TableBody>
-                </Table>
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border p-4">
+                <h1 class="text-2xl font-bold mb-4">Lista de Projetos</h1>
+                <ProjectsTable :projects="props.projects" :permissions="props.permissions" />
             </div>
         </div>
     </AppLayout>
 </template>
+

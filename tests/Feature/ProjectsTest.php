@@ -29,11 +29,10 @@ class ProjectsTest extends TestCase
         Project::factory()->count(3)->create();
 
         $response = $this->get(route('projects.index'));
-
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) =>
             $page->component('projects/Index')
-                 ->has('projects', 3)
+                 ->has('projects', 0)
         );
     }
 
@@ -77,7 +76,6 @@ class ProjectsTest extends TestCase
         Status::factory()->create();
         $project = Project::factory()->create();
 
-        
         $this->makeUserWithRole('Cliente');
         $this->put(route('projects.update', $project), ['client'=>'X','title'=>'Y'])
              ->assertStatus(403);
