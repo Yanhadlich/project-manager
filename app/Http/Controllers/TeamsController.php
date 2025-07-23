@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class TeamsController extends Controller
@@ -39,6 +40,11 @@ class TeamsController extends Controller
         $team->users()->sync($data['user_ids']);
         $team->projects()->sync($data['project_ids']);
 
+        foreach ($data['project_ids'] as $projectId) {
+            $project = Project::find($projectId);
+            $project->users()->syncWithoutDetaching($data['user_ids']);
+        }
+
         return redirect()->route('teams.index')->with('message','Time criado!');
     }
 
@@ -67,18 +73,34 @@ class TeamsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'user_ids' => 'array',
-            'project_ids' => 'array',
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'user_ids' => 'nullable|array',
+            'user_ids.*' => 'exists:users,id',
+            'project_ids' => 'nullable|array',
+            'project_ids.*' => 'exists:projects,id',
         ]);
 
         $team = Team::findOrFail($id);
-        $team->name = $request->name;
-        $team->save();
+        $team->update(['name' => $data['name']]);
 
-        $team->users()->sync($request->user_ids);
-        $team->projects()->sync($request->project_ids);
+        $userIds = $data['user_ids'] ?? [];
+        $projectIds = $data['project_ids'] ?? [];
+
+        $team->users()->sync($userIds);
+        $team->projects()->sync($projectIds);
+
+        foreach ($projectIds as $projectId) {
+            DB::table('project_user')
+                ->where('project_id', $projectId)
+                ->whereIn('user_id', $team->users()->pluck('users.id'))
+                ->delete();
+        }
+
+        foreach ($projectIds as $projectId) {
+            $project = Project::find($projectId);
+            $project->users()->syncWithoutDetaching($userIds);
+        }
 
         return redirect()->route('teams.index')->with('message', 'Equipe atualizada com sucesso!');
     }
