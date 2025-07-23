@@ -9,18 +9,19 @@ import { BookOpen, Building2, Folder, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 interface Props{
-    permission: object;
+    permissions: object;
 }
 
 const props = defineProps<Props>()
-
+const page = usePage();
+const permissions = page.props.permissions?.canDelete || {};
 const mainNavItems: NavItem[] = [
     {
         title: 'Projetos',
         href: '/projects',
         icon: Building2,
     },
-    ...(props.canDelete
+    ...(permissions
     ? [{
         title: 'Times',
         href: '/teams',
