@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { showToast } from '@/lib/alerts';
 import { Head, usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
-import Label from '@/components/ui/label/Label.vue';
 import ProjectsTable from '@/components/ProjectsTable.vue';
 
 interface Projects{

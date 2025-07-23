@@ -18,11 +18,11 @@ class UserSeeder extends Seeder
         $admin->assignRole('Administrador');
 
         $coordinator = User::create([
-            'name' => 'Coordenador User',
-            'email' => 'coordenador@example.com',
+            'name' => 'gerente User',
+            'email' => 'gerente@example.com',
             'password' => Hash::make('password'),
         ]);
-        $coordinator->assignRole('Coordenador');
+        $coordinator->assignRole('Gerente');
 
         $client = User::create([
             'name' => 'Cliente User',

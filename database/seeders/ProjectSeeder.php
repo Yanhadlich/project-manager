@@ -18,7 +18,6 @@ class ProjectSeeder extends Seeder
                 'client' => 'Cliente ' . $i,
                 'status_id' => rand(1, 3),
                 'is_active' => true,
-                'user_id' => $users->random()->id,
             ]);
 
             // $participants = $users->random(rand(1, 3))->pluck('id');

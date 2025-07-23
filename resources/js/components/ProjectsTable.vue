@@ -21,11 +21,11 @@ interface Props{
 const props = defineProps<Props>()
 const search = ref('');
 
-const filteredProject = computed(() =>
-  props.projects.filter(project =>
+const filteredProject = computed(() => {
+  return props.projects.filter(project =>
     project.title.toLowerCase().includes(search.value.toLowerCase())
-  )
-);
+  );
+});
 const handleDelete = async (id: number) => {
     if(await showConfirm('Deseja excluir esse projeto?', "Atenção!")) {
         router.delete(route('projects.delete', {id}));

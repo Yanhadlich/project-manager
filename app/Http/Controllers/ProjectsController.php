@@ -10,7 +10,6 @@ class ProjectsController extends Controller
 {
     public function index() {
         $user = auth()->user();
-
         $query = Project::with('status:id,name')->active()->latest();
         
         if (!$user->hasRole('Administrador')) {
@@ -21,11 +20,11 @@ class ProjectsController extends Controller
 
         $projects = $query->get()->map(function ($project) {
             return [
-                'id' => $project->id,
-                'title' => $project->title,
-                'client' => $project->client,
-                'is_active' => $project->is_active,
-                'status_name' => $project->status->name,
+                'id' => $project->id ?? null,
+                'title' => $project->title ?? null,
+                'client' => $project->client ?? null,
+                'is_active' => $project->is_active ?? null,
+                'status_name' => $project->status->name ?? null,
             ];
         });
 

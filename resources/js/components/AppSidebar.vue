@@ -4,9 +4,15 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Building2, Folder, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+
+interface Props{
+    permission: object;
+}
+
+const props = defineProps<Props>()
 
 const mainNavItems: NavItem[] = [
     {
@@ -14,11 +20,13 @@ const mainNavItems: NavItem[] = [
         href: '/projects',
         icon: Building2,
     },
-    {
+    ...(props.canDelete
+    ? [{
         title: 'Times',
         href: '/teams',
         icon: UsersRound,
-    },
+      }]
+    : []),
 ];
 
 const footerNavItems: NavItem[] = [
