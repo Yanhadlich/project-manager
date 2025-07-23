@@ -49,12 +49,38 @@ class TeamsController extends Controller
         ]);
     }
 
-    public function edit($id) {
-        return Inertia::render('teams/Edit', ['id' => $id]);
+    public function edit($id)
+    {
+        $team = Team::with(['users:id', 'projects:id'])->findOrFail($id);
+
+        return Inertia::render('teams/Edit', [
+            'team' => [
+                'id' => $team->id,
+                'name' => $team->name,
+                'user_ids' => $team->users->pluck('id'),
+                'project_ids' => $team->projects->pluck('id'),
+            ],
+            'users' => User::select('id', 'name')->get(),
+            'projects' => Project::select('id', 'title')->get(),
+        ]);
     }
 
-    public function update(Request $request, $id) {
-        return redirect()->route('teams.index')->with('message', 'Team updated successfully!');
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'user_ids' => 'array',
+            'project_ids' => 'array',
+        ]);
+
+        $team = Team::findOrFail($id);
+        $team->name = $request->name;
+        $team->save();
+
+        $team->users()->sync($request->user_ids);
+        $team->projects()->sync($request->project_ids);
+
+        return redirect()->route('teams.index')->with('message', 'Equipe atualizada com sucesso!');
     }
 
     public function delete($id) {
